@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Roboto">
+    <title>Weather App</title>
+</head>
+<body style="display: flex; flex-direction: column; align-items: center; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+    <h1 style="padding-bottom: 40px; padding-top: 40px; font-size: larger;">Node.js Weather App &#128512</h1>
+
+    <div style="text-align: center; background-color: rgb(191, 117, 117); padding: 40px; border-radius: 10px; max-width: 400px;">
+        <div style="margin-bottom: 10px;">
+            <input type="text" id="zipCode" placeholder="Enter a Zipcode" style="margin-bottom: 10px;">
+            <button onclick="fetchData()" style="margin-bottom: 10px;">Fetch Weather</button>
+        </div>
+
+        <div id="inputError"></div>
+
+        <div id="weatherData" style="max-height: 300px; overflow-y: auto; padding-right: 20px"></div>
+    </div>
+
+
+    <script>
+        
+         async function fetchData() {
+            try {
+                const zipCode = document.getElementById("zipCode").value.trim();
+                if (!/^\d{5}$/.test(zipCode)) {
+                    throw new Error("Invalid input. Enter a 5 digit Zipcode");
+                }
+
+                const response = await fetch('/weather', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ zipCode })
+                });
+
+                if (!response.ok) {
+                const errorData = await response.json();
+                    throw new Error(errorData.error); // throws error message from the node.js backend 
+                }
+                const weatherData = await response.json();
+                console.log(weatherData)
+                displayWeather(weatherData);
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById("weatherData").innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        }
+
+        function displayWeather(weatherData) {
+            const weatherElement = document.getElementById("weatherData");
+            weatherElement.innerHTML = "";
+    
+            for (const weather of weatherData) {
+                const onlyUS = weather.country_code
+                if (onlyUS === "US") {
+                    weatherElement.innerHTML += `
+                        <p>Current weather in ${weather.name}, ${weather.admin1}, ${weather.country}:</p>
+                        <p>Temperature: ${weather.temperature}</p>
+                        <p>Wind Speed: ${weather.wind_speed}</p>
+                        <p>Wind Direction: ${weather.wind_direction}</p>
+                        <p>Currently: ${weather.is_day} time</p>
+                        <hr>`;
+                }   
+            }
+        }
+    </script>
+</body>
+</html>
