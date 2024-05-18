@@ -22,14 +22,18 @@
 
 
     <script>
-        
+        // function for fetching weather data from the backend
          async function fetchData() {
             try {
-                const zipCode = document.getElementById("zipCode").value.trim();
+                // gets the zipcode input value from the HTML input element, aka the input field
+                const zipCode = document.getElementById("zipCode").value.trim(); // trim any trailing whitespace
+
+                // ensuring users can only input a 5 digit integer, if not, then throw errors
                 if (!/^\d{5}$/.test(zipCode)) {
                     throw new Error("Invalid input. Enter a 5 digit Zipcode");
                 }
 
+                // makes a POST request to the backend's '/weather' endpoint with the zipcode data. Node.js has the matching endpoint
                 const response = await fetch('/weather', {
                     method: 'POST',
                     headers: {
@@ -42,8 +46,14 @@
                 const errorData = await response.json();
                     throw new Error(errorData.error); // throws error message from the node.js backend 
                 }
+
+                // parse the weather data from the response body
                 const weatherData = await response.json();
+
+                // logs the weatherData's data as an array to the console
                 console.log(weatherData)
+
+                // displays weatherData on the frontend
                 displayWeather(weatherData);
 
             } catch (error) {
@@ -52,11 +62,19 @@
             }
         }
 
+        // function displays weather data on the frontend
         function displayWeather(weatherData) {
+
+            // gets the HTML element where weather data will be displayed
             const weatherElement = document.getElementById("weatherData");
+
+            // clears existing displayed weather data
             weatherElement.innerHTML = "";
     
+            // loops through the JSON's weatherData array 
             for (const weather of weatherData) {
+
+                // this is to only display weather data from locations within the US
                 const onlyUS = weather.country_code
                 if (onlyUS === "US") {
                     weatherElement.innerHTML += `
