@@ -100,7 +100,6 @@ app.post('/weather', async (req, res) => {
             //console.log("Current weather in", name+ ",", admin1+",", country, "is", temperature_2m + tempFah, "with wind speeds of", wind_speed_10m + windSpeedMph, "towards", wind_direction_10m + windDirectionDegree + ". Currently it is", is_day ? "Day" : "Night" , "time.");
 
         }
-
         res.json(weatherDataArray);
 
     } catch (error) {
