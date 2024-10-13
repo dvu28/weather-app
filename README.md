@@ -1,3 +1,2 @@
-# nodejs-app
- Node.js app with express.js, Docker, and EC2.
- Utilized Postman and AWS 
+# Node.js Weather App with OpenMeteo's API
+ Node.js, Express.js, Docker, AWS EC2, Postman
